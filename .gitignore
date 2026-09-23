@@ -1,0 +1,14 @@
+# Material de clase (no es nuestro, no se publica)
+corpus/
+notas_clase/
+*.pdf
+
+# Material interno del grupo (guías y borradores)
+informe/
+
+# Archivos generados por herramientas
+graphify-out/
+__pycache__/
+
+# Archivos temporales de Office
+~$*
