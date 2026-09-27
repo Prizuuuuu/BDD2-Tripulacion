@@ -1,9 +1,6 @@
 -- =====================================================================
 -- Avance 1 - Base de Datos 2 (Septiembre 2026)
 -- Grupo 5 - Subsistema Tripulación - PostgreSQL 16
---
--- Convención: snake_case, minúsculas, sin acentos ni ñ.
--- Índices: SOLO los que PostgreSQL crea por PRIMARY KEY y UNIQUE.
 -- =====================================================================
 
 SET client_min_messages = warning;   -- oculta avisos "does not exist, skipping" en la primera ejecución
