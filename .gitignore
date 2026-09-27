@@ -12,3 +12,6 @@ __pycache__/
 
 # Archivos temporales de Office
 ~$*
+
+# Respaldos de la base (se entregan aparte)
+backup/
