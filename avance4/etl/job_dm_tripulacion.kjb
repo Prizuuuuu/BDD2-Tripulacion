@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job><name>job_dm_tripulacion</name><description>Carga completa del Data Mart de Tripulación (staging PostgreSQL + Neo4j → MySQL)</description><extended_description/><job_version/><directory>/</directory><created_user>Grupo 5</created_user><created_date>2026/11/16 21:00:00.000</created_date><modified_user>Grupo 5</modified_user><modified_date>2026/11/16 21:00:00.000</modified_date><parameters></parameters>
+<connection><name>PG_Staging_U1</name><server>localhost</server><type>POSTGRESQL</type><access>Native</access><database>tripulacion</database><port>5440</port><username>postgres</username><password>0000</password><servername/><data_tablespace/><index_tablespace/><attributes><attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute><attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute><attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute><attribute><code>PORT_NUMBER</code><attribute>5440</attribute></attribute><attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute><attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute><attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute><attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute><attribute><code>USE_POOLING</code><attribute>N</attribute></attribute></attributes></connection>
+<connection><name>MySQL_DM</name><server>localhost</server><type>MYSQL</type><access>Native</access><database>dm_tripulacion</database><port>3307</port><username>root</username><password>0000</password><servername/><data_tablespace/><index_tablespace/><attributes><attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute><attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute><attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute><attribute><code>PORT_NUMBER</code><attribute>3307</attribute></attribute><attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute><attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute><attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute><attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute><attribute><code>USE_POOLING</code><attribute>N</attribute></attribute><attribute><code>EXTRA_OPTION_MYSQL.useSSL</code><attribute>false</attribute></attribute><attribute><code>EXTRA_OPTION_MYSQL.allowPublicKeyRetrieval</code><attribute>true</attribute></attribute><attribute><code>EXTRA_OPTION_MYSQL.serverTimezone</code><attribute>UTC</attribute></attribute><attribute><code>EXTRA_OPTION_MYSQL.characterEncoding</code><attribute>UTF-8</attribute></attribute><attribute><code>EXTRA_OPTION_MYSQL.rewriteBatchedStatements</code><attribute>true</attribute></attribute></attributes></connection>
+<slaveservers></slaveservers><job-log-table><connection/><schema/><table/><size_limit_lines/><interval/><timeout_days/></job-log-table><pass_batchid>N</pass_batchid><shared_objects_file/>
+<entries><entry><name>Start</name><description/><type>SPECIAL</type><attributes/><start>Y</start><dummy>N</dummy><repeat>N</repeat><schedulerType>0</schedulerType><intervalSeconds>0</intervalSeconds><intervalMinutes>60</intervalMinutes><hour>12</hour><minutes>0</minutes><weekDay>1</weekDay><DayOfMonth>1</DayOfMonth><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>60</xloc><yloc>80</yloc><attributes_kjc/></entry>
+<entry><name>Preparar carga (vaciar Data Mart)</name><description/><type>SQL</type><attributes/><sql>USE dm_tripulacion;
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE fact_asignacion; TRUNCATE TABLE fact_jornada; TRUNCATE TABLE fact_credencial;
+TRUNCATE TABLE dim_credencial; TRUNCATE TABLE dim_vuelo; TRUNCATE TABLE dim_tripulante;
+TRUNCATE TABLE dim_aeropuerto; TRUNCATE TABLE dim_region; TRUNCATE TABLE dim_tiempo;
+TRUNCATE TABLE stg_asignacion; TRUNCATE TABLE stg_jornada; TRUNCATE TABLE stg_credencial; TRUNCATE TABLE etl_rechazos;
+SET FOREIGN_KEY_CHECKS = 1;</sql><useVariableSubstitution>F</useVariableSubstitution><sqlfromfile>F</sqlfromfile><sqlfilename/><sendOneStatement>F</sendOneStatement><connection>MySQL_DM</connection><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>260</xloc><yloc>80</yloc><attributes_kjc/></entry>
+<entry><name>tr_01 Dimensiones comunes</name><description/><type>TRANS</type><attributes/><specification_method>filename</specification_method><trans_object_id/><filename>${Internal.Entry.Current.Directory}/tr_01_dimensiones_comunes.ktr</filename><transname/><arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row><clear_rows>Y</clear_rows><clear_files>Y</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time><loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished><follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work><run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>460</xloc><yloc>80</yloc><attributes_kjc/></entry>
+<entry><name>tr_02 Tripulante y vuelo</name><description/><type>TRANS</type><attributes/><specification_method>filename</specification_method><trans_object_id/><filename>${Internal.Entry.Current.Directory}/tr_02_dim_tripulante_vuelo.ktr</filename><transname/><arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row><clear_rows>Y</clear_rows><clear_files>Y</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time><loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished><follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work><run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>660</xloc><yloc>80</yloc><attributes_kjc/></entry>
+<entry><name>tr_03 Hechos de asignación</name><description/><type>TRANS</type><attributes/><specification_method>filename</specification_method><trans_object_id/><filename>${Internal.Entry.Current.Directory}/tr_03_hechos_asignacion.ktr</filename><transname/><arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row><clear_rows>Y</clear_rows><clear_files>Y</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time><loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished><follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work><run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>860</xloc><yloc>80</yloc><attributes_kjc/></entry>
+<entry><name>tr_04 Hechos de jornada</name><description/><type>TRANS</type><attributes/><specification_method>filename</specification_method><trans_object_id/><filename>${Internal.Entry.Current.Directory}/tr_04_hechos_jornada.ktr</filename><transname/><arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row><clear_rows>Y</clear_rows><clear_files>Y</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time><loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished><follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work><run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>60</xloc><yloc>250</yloc><attributes_kjc/></entry>
+<entry><name>tr_05 Hechos de credenciales</name><description/><type>TRANS</type><attributes/><specification_method>filename</specification_method><trans_object_id/><filename>${Internal.Entry.Current.Directory}/tr_05_hechos_credencial.ktr</filename><transname/><arg_from_previous>N</arg_from_previous><params_from_previous>N</params_from_previous><exec_per_row>N</exec_per_row><clear_rows>Y</clear_rows><clear_files>Y</clear_files><set_logfile>N</set_logfile><logfile/><logext/><add_date>N</add_date><add_time>N</add_time><loglevel>Basic</loglevel><cluster>N</cluster><slave_server_name/><set_append_logfile>N</set_append_logfile><wait_until_finished>Y</wait_until_finished><follow_abort_remote>N</follow_abort_remote><create_parent_folder>N</create_parent_folder><logging_remote_work>N</logging_remote_work><run_configuration>Pentaho local</run_configuration><parameters><pass_all_parameters>Y</pass_all_parameters></parameters><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>260</xloc><yloc>250</yloc><attributes_kjc/></entry>
+<entry><name>Resolver SK y cargar hechos</name><description/><type>SQL</type><attributes/><sql>USE dm_tripulacion;
+
+UPDATE dim_aeropuerto a JOIN dim_region r ON r.id_region = a.id_region
+   SET a.sk_region = r.sk_region, a.region = r.nombre_region;
+UPDATE dim_tripulante t JOIN dim_aeropuerto a ON a.codigo_iata = t.base_iata
+   SET t.sk_aeropuerto_base = a.sk_aeropuerto, t.sk_region_base = a.sk_region, t.base_region = a.region;
+
+INSERT INTO dim_credencial (fuente, categoria, tipo, equipo)
+SELECT DISTINCT s.fuente, s.categoria, s.tipo, s.equipo FROM stg_credencial s
+ WHERE NOT EXISTS (SELECT 1 FROM dim_credencial d WHERE d.fuente = s.fuente AND d.tipo = s.tipo AND d.equipo &lt;=&gt; s.equipo);
+
+INSERT INTO fact_asignacion
+SELECT CAST(DATE_FORMAT(s.fecha_salida, '%Y%m%d') AS UNSIGNED), t.sk_tripulante, v.sk_vuelo, ao.sk_aeropuerto, ad.sk_aeropuerto, ao.sk_region,
+       s.id_asignacion, s.id_pairing, s.orden_en_pairing, s.rol, s.horas_vuelo, s.retraso_minutos,
+       (s.retraso_minutos &lt;= 15),
+       s.descanso_previo_h,
+       CASE s.mismo_aeropuerto_previo WHEN 'true' THEN 0 WHEN 'false' THEN 1 ELSE NULL END,
+       (ao.sk_region &lt;&gt; t.sk_region_base),
+       (s.aviso_horas IS NOT NULL),
+       COALESCE(s.aviso_horas &lt;= 6, 0),
+       s.aviso_horas, s.motivo_reemplazo
+  FROM stg_asignacion s
+  JOIN dim_tripulante t  ON t.id_tripulante = s.id_tripulante
+  JOIN dim_vuelo v       ON v.id_vuelo = s.id_vuelo
+  JOIN dim_aeropuerto ao ON ao.codigo_iata = s.origen
+  JOIN dim_aeropuerto ad ON ad.codigo_iata = s.destino;
+
+INSERT INTO fact_jornada
+SELECT CAST(DATE_FORMAT(s.fecha_jornada, '%Y%m%d') AS UNSIGNED), t.sk_tripulante, t.sk_aeropuerto_base, t.sk_region_base,
+       s.id_jornada, s.tipo_jornada, s.horas_servicio, s.tramos_volados, s.horas_vuelo_dia, s.descanso_previo_h,
+       s.horas_servicio_7d, s.margen_60h_semana,
+       (s.horas_servicio &lt;= 13),
+       COALESCE(s.descanso_previo_h &gt;= 10, 1),
+       (s.horas_servicio_7d &lt;= 60),
+       (s.horas_servicio &lt;= 13 AND COALESCE(s.descanso_previo_h &gt;= 10, 1) AND s.horas_servicio_7d &lt;= 60)
+  FROM stg_jornada s
+  JOIN dim_tripulante t ON t.id_tripulante = s.id_tripulante;
+
+INSERT INTO fact_credencial
+SELECT 20260630,
+       CAST(DATE_FORMAT(s.fecha_vencimiento, '%Y%m%d') AS UNSIGNED),
+       t.sk_tripulante, d.sk_credencial, t.sk_aeropuerto_base, t.sk_region_base,
+       s.id_credencial, s.estado,
+       DATEDIFF(s.fecha_vencimiento, '2026-06-30'),
+       COALESCE(s.estado = 'Vigente' AND s.fecha_vencimiento BETWEEN '2026-06-30' AND DATE_ADD('2026-06-30', INTERVAL 90 DAY), 0),
+       COALESCE(s.fecha_vencimiento &lt; '2026-06-30', 0)
+  FROM stg_credencial s
+  JOIN dim_tripulante t ON t.id_tripulante = s.id_tripulante
+  JOIN dim_credencial d ON d.fuente = s.fuente AND d.tipo = s.tipo AND d.equipo &lt;=&gt; s.equipo;
+
+SELECT 'fact_asignacion' AS tabla, COUNT(*) AS filas FROM fact_asignacion
+UNION ALL SELECT 'fact_jornada', COUNT(*) FROM fact_jornada
+UNION ALL SELECT 'fact_credencial', COUNT(*) FROM fact_credencial;</sql><useVariableSubstitution>F</useVariableSubstitution><sqlfromfile>F</sqlfromfile><sqlfilename/><sendOneStatement>F</sendOneStatement><connection>MySQL_DM</connection><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>460</xloc><yloc>250</yloc><attributes_kjc/></entry>
+<entry><name>Data Mart cargado</name><description/><type>SUCCESS</type><attributes/><parallel>N</parallel><draw>Y</draw><nr>0</nr><xloc>660</xloc><yloc>250</yloc><attributes_kjc/></entry>
+</entries>
+<hops><hop><from>Start</from><to>Preparar carga (vaciar Data Mart)</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>Y</unconditional></hop><hop><from>Preparar carga (vaciar Data Mart)</from><to>tr_01 Dimensiones comunes</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>tr_01 Dimensiones comunes</from><to>tr_02 Tripulante y vuelo</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>tr_02 Tripulante y vuelo</from><to>tr_03 Hechos de asignación</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>tr_03 Hechos de asignación</from><to>tr_04 Hechos de jornada</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>tr_04 Hechos de jornada</from><to>tr_05 Hechos de credenciales</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>tr_05 Hechos de credenciales</from><to>Resolver SK y cargar hechos</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop><hop><from>Resolver SK y cargar hechos</from><to>Data Mart cargado</to><from_nr>0</from_nr><to_nr>0</to_nr><enabled>Y</enabled><evaluation>Y</evaluation><unconditional>N</unconditional></hop></hops>
+<notepads></notepads><attributes/>
+</job>
